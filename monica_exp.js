@@ -16,12 +16,73 @@ const MEDIA_TYPE_IMG = "IMG_ONLY"
 
 var star_show = STAR_ALL
 var media_type = MEDIA_TYPE_ALL
-var sort_order = SORT_ORDER_RECENT
+var sort_order = SORT_ORDER_TOP
 var reviewer_type = REVIEWER_TYPE_ALL
 
 var reviews_to_show = []
 
 var event_stream = []
+
+
+function record_event(from) {
+	ts = Date.now()
+	event_stream.push([ts, from])
+}
+
+function encode_event_stream() {
+	return btoa(event_stream.join(";"))
+}
+
+$("#rating-whats-this").click(function() {
+	record_event("#rating-whats-this")
+	show_model("Customer Reviews Star Rating", [
+    "Customer Reviews, including Product Star Ratings help customers to learn more about the product and decide whether it is the right product for them.",
+    "To calculate the overall star rating and percentage breakdown by star, we don’t use a simple average. Instead, our system considers things like how recent a review is and if the reviewer bought the item on Amazon. It also analyzed reviews to verify trustworthiness."])
+})
+
+$("#ask-btn").click(function() {
+	record_event("##ask-btn")
+	$("#ask-textarea").val("");
+	show_model("Ask Questions", ["Customers are able to ask questions about your product directly on your listing.",
+		"Once the questions are answered, they will be publicly visible on your listing page, just above the customer review section."])
+})
+
+$("#filter-whats-this").click(function() {
+	record_event("#filter-whats-this")
+	show_model("filter", ["filter"])
+})
+
+$("#sortby-whats-this").click(function() {
+	record_event("#sortby-whats-this")
+	show_model("sortby", ["sortby"])
+})
+
+
+function add_review_model_listener() {
+	$(".cr-helpful-button").click(function() {
+		record_event(".helpful-button")
+		show_model("helpful", ["helpful"])
+	})
+
+	$(".report-abuse-link").click(function() {
+		record_event(".report-abuse")
+		show_model("abuse", ["abuse"])
+	})
+
+	$(".vine-whats-this").click(function() {
+		record_event(".vine-whats-this")
+		show_model("Vine Voice", ["This customer is a member of Amazon Vine™ Voice, an invitation only program that gives Amazon reviewers advance access to not-yet-released products for the purpose of writing reviews.", 
+		  "A review written as part of the Vine™ Voice program always includes this label: \"Amazon Vine™ Review\" on the initial product detail page and \"Customer review from the Amazon Vine™ Program\" when viewing the entire review. This is a permanent badge."])
+	})
+
+	$(".top-reviewer-whats-this").click(function() {
+		record_event(".top-reviewer-whats-this")
+		show_model("Top Reviewers", [
+		  "These badges identify our best reviewers. The Top Reviewer Rankings showcase our best contributors at the moment, while the Hall of Fame honors those who have been highly ranked in previous years."])
+	})
+}
+
+
 
 function refresh_reviews() {
 	// console.log(sort_order);
@@ -44,7 +105,11 @@ function refresh_reviews() {
 		}
 		reviews_to_show.push(review)
 	}
-	// TODO sort reviews
+	// sort reviews
+	if (sort_order == SORT_ORDER_RECENT) {
+		reviews_to_show.sort(function(r1, r2) {return parseInt(r2.date)-parseInt(r1.date)})
+	}
+
 
 	// append reviews
 	$("#sdf_comments").empty()
@@ -63,18 +128,8 @@ function refresh_reviews() {
 	if (reviews_to_show.length <= 20) {
 		$("#comment_page_btn_1").hide()
 	}
-}
 
-function record_event(from) {
-	ts = Date.now()
-	event_stream.push([ts, from])
-}
-
-function encode_event_stream() {
-	for (let i = 0; i < event_stream.length; i++) {
-		evt = event_stream[i]
-		console.log(evt[0] + ": " + evt[1])
-	}
+	add_review_model_listener()
 }
 
 $("#sort-order-dropdown-val").on('DOMSubtreeModified', function () {
@@ -131,19 +186,56 @@ $("#media-type-dropdown-val").on('DOMSubtreeModified', function () {
 });
 
 
+$("#rating_show_star_5").click(function() {
+	record_event("#rating_show_star_4")
+	$("#star-count-dropdown-val").html("5 stars only")
+})
+$("#rating_show_star_4").click(function() {
+	record_event("#rating_show_star_4")
+	$("#star-count-dropdown-val").html("4 stars only")
+})
+$("#rating_show_star_3").click(function() {
+	record_event("#rating_show_star_3")
+	$("#star-count-dropdown-val").html("3 stars only")
+})
+$("#rating_show_star_2").click(function() {
+	record_event("#rating_show_star_2")
+	$("#star-count-dropdown-val").html("2 stars only")
+})
+$("#rating_show_star_1").click(function() {
+	record_event("#rating_show_star_1")
+	$("#star-count-dropdown-val").html("1 star only")
+})
+
+
 // add page btn listeners
 for (let pIdx = 1; pIdx <= 5; pIdx++) {
 	$("#comment_page_btn_" + pIdx).click(function() {
+		record_event(this.id)
+
 		$("#sdf_comments").empty()
 		startCmtIdx = ($(this).attr('btn_id') - 1) * 20
 		for (let i = 0; i < 20 && (startCmtIdx + i) < reviews_to_show.length; i++) { 
 			$("#sdf_comments").append(reviews_to_show[startCmtIdx + i].content)
 		}
+		add_review_model_listener()
+		
 		// back to #cm_cr-view_opt_sort_filter
-		record_event(this.id)
 		window.location.href = "#cm_cr-view_opt_sort_filter"
 	});
 }
+
+
+// feedback btn
+$("#generate-feedback-btn").click(function() {
+	// streamStr = event_stream.join(";")
+	// base64Encode = btoa(streamStr)
+	record_event("#generate-feedback-btn")
+	console.log(event_stream)
+	console.log(encode_event_stream())
+	show_model("Your Feedback Code", [encode_event_stream()])
+})
+
 
 refresh_reviews()
 record_event("Init")
