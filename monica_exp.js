@@ -33,52 +33,74 @@ function encode_event_stream() {
 	return btoa(event_stream.join(";"))
 }
 
+
+$("#secureTransaction").click(function() {
+	record_event("#secureTransaction")
+	show_model("Secure Transaction", ["We work hard to protect your security and privacy. Our payment security system encrypts your information during transmission. We don’t share your credit card details with third-party sellers, and we don’t sell your information to others."])
+})
+
+
+$("#eligibleReturn").click(function() {
+	record_event("#eligibleReturn")
+	show_model("Eligible for Return, Refund or Replacement", ["This item can be returned in its original condition for a full refund or replacement within 30 days of receipt."])
+})
+
+
 $("#rating-whats-this").click(function() {
 	record_event("#rating-whats-this")
-	show_model("Customer Reviews Star Rating", [
-    "Customer Reviews, including Product Star Ratings help customers to learn more about the product and decide whether it is the right product for them.",
-    "To calculate the overall star rating and percentage breakdown by star, we don’t use a simple average. Instead, our system considers things like how recent a review is and if the reviewer bought the item on Amazon. It also analyzed reviews to verify trustworthiness."])
+	show_model("Ratings", ["Customer Reviews help customers to learn more about the product and decide whether it is the right product for them.",
+		"To calculate the overall star rating and percentage breakdown by star, we don’t use a simple average. Instead, our system considers things like how recent a review is and if the review was written after a verified purchase. It also analyzed reviews to verify trustworthiness."])
 })
 
 $("#ask-btn").click(function() {
 	record_event("##ask-btn")
 	$("#ask-textarea").val("");
-	show_model("Ask Questions", ["Customers are able to ask questions about your product directly on your listing.",
+	show_model("Ask Questions", ["Thank you for asking questions about the product. ",
 		"Once the questions are answered, they will be publicly visible on your listing page, just above the customer review section."])
 })
 
 $("#filter-whats-this").click(function() {
 	record_event("#filter-whats-this")
-	show_model("filter", ["filter"])
+	show_model("Filter", ["Filter function is to select a subset of reviews according to certain conditions. ",
+		"You may find out the reviews written by verified buyers (\"Verified reviews only\"); or the reviews of certain star rating; or the reviews with images (\"Image reviews only\")."])
 })
 
 $("#sortby-whats-this").click(function() {
 	record_event("#sortby-whats-this")
-	show_model("sortby", ["sortby"])
+	show_model("Sorting", ["Sort function is to re-order the reviews. ",
+		"You may sort the reviews according to their relevance (\"Top reviews\"), or recency (\"Most recent\"). "])
 })
+
+
 
 
 function add_review_model_listener() {
 	$(".cr-helpful-button").click(function() {
 		record_event(".helpful-button")
-		show_model("helpful", ["helpful"])
+		show_model("Helpful", ["Thank you for your vote on the product review's helpfulness. Your vote will be used to rank all reviews displayed for the product. "])
 	})
 
 	$(".report-abuse-link").click(function() {
 		record_event(".report-abuse")
-		show_model("abuse", ["abuse"])
+		show_model("Report abuse", ["Thank you for your report on the product review. We will remove the review once it is confirmed as inappropriate."])
 	})
 
 	$(".vine-whats-this").click(function() {
 		record_event(".vine-whats-this")
-		show_model("Vine Voice", ["This customer is a member of Amazon Vine™ Voice, an invitation only program that gives Amazon reviewers advance access to not-yet-released products for the purpose of writing reviews.", 
-		  "A review written as part of the Vine™ Voice program always includes this label: \"Amazon Vine™ Review\" on the initial product detail page and \"Customer review from the Amazon Vine™ Program\" when viewing the entire review. This is a permanent badge."])
+		show_model("Vine Voice", ["This customer had advance access to not-yet-released products for the purpose of writing reviews.", 
+		  "A review written by such customers always includes the label \"Vine Customer Review of Free Product\"."])
 	})
 
-	$(".top-reviewer-whats-this").click(function() {
-		record_event(".top-reviewer-whats-this")
-		show_model("Top Reviewers", [
-		  "These badges identify our best reviewers. The Top Reviewer Rankings showcase our best contributors at the moment, while the Hall of Fame honors those who have been highly ranked in previous years."])
+	$(".top-500-whats-this").click(function() {
+		record_event(".top-500-whats-this")
+		show_model("Top 500 Reviewers", ["This customer is one of the best reviewers on our platform.",
+			"The badge identify the top 500 review contributors at the moment."])
+	})
+
+	$(".top-1000-whats-this").click(function() {
+		record_event(".top-1000-whats-this")
+		show_model("Top 1000 Reviewers", ["This customer is one of the best reviewers on our platform.",
+			"The badge identify the top 1000 review contributors at the moment."])
 	})
 }
 
